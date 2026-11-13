@@ -1,4 +1,4 @@
-const version = "1.1.2";
+const version = "1.2.0";
 
 const rounds = {
   // --- TIER 1: The Basics (1-10) ---
@@ -2514,9 +2514,9 @@ function runBuff(buffDefender,buff){
         if(defender != buffDefender){
             let distance = (((buffDefender.x+(buffDefender.width/2))-(defender.x+(defender.width/2)))**2 + ((buffDefender.y+(buffDefender.height/2))-(defender.y+(defender.height/2)))**2)**0.5;
             if(distance < buffRange && !defenders[i]["specialAbilities"].find(sublist => sublist[0] === "buff")){
-                defender["buff"]["range"] *= buff["range"];
-                defender["buff"]["damage"] *= buff["damage"];
-                defender["buff"]["attackSpeed"] *= buff["attackSpeed"];
+                defender["buff"]["range"] += buff["range"] - 1;
+                defender["buff"]["damage"] += buff["damage"] - 1;
+                defender["buff"]["attackSpeed"] += buff["attackSpeed"] - 1;
             }
         }
     }
@@ -2526,11 +2526,8 @@ function runSplash(currentEnemy, currentDefender, enemyIndex, splashSize, slowDo
     const centerPos = currentEnemy.position;
     const damage = Math.round(currentDefender.damage * currentDefender["buff"]["damage"]);
 
-    // Use a Set or a temporary list to track what to remove 
-    // to avoid index shifting mid-loop.
     let enemiesToRemove = [];
 
-    // Helper to check and damage
     const checkTarget = (idx) => {
         let e = enemies[idx];
         if (e && Math.abs(e.position - centerPos) <= splashSize) {
@@ -2540,12 +2537,11 @@ function runSplash(currentEnemy, currentDefender, enemyIndex, splashSize, slowDo
                 money += e.money;
                 enemiesToRemove.push(e);
             }
-            return true; // Still in range
+            return true;
         }
-        return false; // Out of range or undefined
+        return false;
     };
 
-    // Expand outward
     let offset = 1;
     let lookAbove = true;
     let lookBelow = true;
@@ -2566,7 +2562,6 @@ function runChain(currentEnemy, currentDefender, enemyIndex, chainSize, slowDown
     const attackColor = Math.max(Math.round((1/((currentDefender.damage * currentDefender["buff"]["damage"])/8 + 7/8))*255),16).toString(16);
     const hitEnemies = new Set();
 
-    // The Recursive Chainer
     const chain = (index, direction) => {
         const nextIndex = index + direction;
         const target = enemies[nextIndex];
@@ -2578,10 +2573,8 @@ function runChain(currentEnemy, currentDefender, enemyIndex, chainSize, slowDown
             lastEnemy = currentEnemy;
         }
 
-        // Check if the next enemy exists and is within range of the CURRENT one
         if (target && Math.abs(target.position - lastEnemy.position) <= chainSize) {
             
-            // Apply Damage & Stats
             currentDefender.damageDelt += Math.min(target.health, damage);
             target.dealDamage(damage, slowDownEffect);
             hitEnemies.add(target);
@@ -2596,17 +2589,14 @@ function runChain(currentEnemy, currentDefender, enemyIndex, chainSize, slowDown
                 money += target.money;
             }
 
-            // Look again from THIS new position (The Chain)
             chain(nextIndex, direction);
         }
     };
 
-    // Start the chain reactions
-    chain(enemyIndex, 1);  // Look "Above"
-    chain(enemyIndex, -1); // Look "Below"
+    chain(enemyIndex, 1); 
+    chain(enemyIndex, -1);
     drawMoney()
 
-    // Cleanup dead enemies
     enemies = enemies.filter(e => e.health > 0);
 }
 
