@@ -1,4 +1,4 @@
-const version = "1.2.0";
+const version = "1.2.1";
 
 const rounds = {
   // --- TIER 1: The Basics (1-10) ---
@@ -2133,7 +2133,7 @@ function drawHomeTitle(){
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(`Tower Defense`, canvas.width/2,canvas.height/8);
+    ctx.fillText(`Slab Tower Defense`, canvas.width/2,canvas.height/8);
 }
 
 function drawMapSelect(){ 
