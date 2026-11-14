@@ -1,7 +1,6 @@
 const version = "1.2.1";
 
 const rounds = {
-  // --- TIER 1: The Basics (1-10) ---
   1: Array(4).fill({ enemyType: "basic", wait: 40 }),
   2: [{ enemyType: "basic", wait: 0 }, { enemyType: "fast", wait: 60 }, { enemyType: "fast", wait: 20 }],
   3: [{ enemyType: "big", wait: 0 }, { enemyType: "basic", wait: 30 }, { enemyType: "big", wait: 50 }],
@@ -13,7 +12,6 @@ const rounds = {
   9: [{ enemyType: "tank", wait: 0 }, { enemyType: "big", wait: 40 }, { enemyType: "tank", wait: 40 }],
   10: [{ enemyType: "power", wait: 0 }, { enemyType: "power", wait: 60 }],
 
-  // --- TIER 2: Mid-Game Stability (11-30) ---
   11: Array(15).fill({ enemyType: "basic", wait: 16 }),
   12: [{ enemyType: "heavy", wait: 0 }],
   13: Array(5).fill({ enemyType: "bullet", wait: 26 }),
@@ -35,7 +33,6 @@ const rounds = {
   29: Array(3).fill({ enemyType: "strong", wait: 30 }),
   30: [{ enemyType: "heavy", wait: 0 }, { enemyType: "super", wait: 50 }],
 
-  // --- TIER 3: Strategic Pressure (31-50) ---
   31: Array(40).fill({ enemyType: "fast", wait: 10 }),
   32: Array(8).fill({ enemyType: "tank", wait: 6 }),
   33: Array(15).fill({ enemyType: "power", wait: 10 }),
@@ -57,7 +54,6 @@ const rounds = {
   49: Array(50).fill({ enemyType: "fast", wait: 2 }),
   50: [{ enemyType: "beast", wait: 0 }],
 
-  // --- TIER 4: The Strong & Super Era (51-75) ---
   51: Array(8).fill({ enemyType: "strong", wait: 20 }),
   52: Array(15).fill({ enemyType: "heavy", wait: 26 }),
   53: [{ enemyType: "beast", wait: 0 }, ...Array(8).fill({ enemyType: "super", wait: 22 })],
@@ -84,7 +80,6 @@ const rounds = {
   74: Array(22).fill({ enemyType: "super", wait: 12 }),
   75: [{ enemyType: "beast", wait: 0 }, { enemyType: "beast", wait: 50 }, { enemyType: "beast", wait: 50 }, { enemyType: "beast", wait: 50 }, { enemyType: "sonic", wait: 26 }],
 
-// --- TIER 5: Final Descent (76-100) ---
   76: Array(40).fill({ enemyType: "fast", wait: 4 }),
   77: Array(15).fill({ enemyType: "strong", wait: 10 }),
   78: Array(5).fill({ enemyType: "sonic", wait: 40 }),
@@ -292,7 +287,7 @@ var enemies = [];
 var strongEnemies = [];
 
 var defenders = [];
-var attacks = []; //{"color": "#ffffff", "start": [0,0], "end": [200,100], "time": 0}
+var attacks = [];
 var health = maxHealth;
 var money = startingMoney;
 var currentRound = 0;
@@ -311,14 +306,12 @@ var gameOver = false;
 
 var selectedDefender = null;
 
-// Keep everything in a single object so it stays synced
 var gameSettings = {
     "keepTowersSelected": false,
     "showRangeOutlines": true,
     "autoStart": false
 };
 
-// Use a string 'key' to point to the property in gameSettings
 var settingsUI = [
     { "key": "keepTowersSelected", "text": "Keep Towers Selected", "size": [250, 50] },
     { "key": "showRangeOutlines", "text": "Show Range Outlines", "size": [250, 50] },
@@ -1195,7 +1188,6 @@ function placeDefender(mousePos) {
         }
     }
 
-    // 4. CHECK OTHER DEFENDERS (Stacking Prevention)
     for (let i = 0; i < defenders.length; i++) {
         const d = defenders[i];
         
@@ -1205,7 +1197,6 @@ function placeDefender(mousePos) {
         }
     }
 
-    // 5. SUCCESS: If it passed all checks, subtract money and place
     if (money >= selectedDefenderType[1]*difficulty[1]) {
         money -= selectedDefenderType[1]*difficulty[1];
         defenders.push(new Defender(mouseX, mouseY,selectedDefenderType[0]));
@@ -1341,18 +1332,16 @@ function drawSettings(){
 }
 
 function drawRotatedRect(x, y, width, height, degrees, color) {
-      // Convert degrees to radians: rad = deg * (PI / 180)
       const radians = degrees * Math.PI / 180;
 
-      ctx.save();            // 1. Save state
-      ctx.translate(x, y);   // 2. Move to center point
-      ctx.rotate(radians);   // 3. Rotate context
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(radians);
       
       ctx.fillStyle = color;
-      // 4. Draw centered at (0,0)
       ctx.fillRect(-width / 2, -height / 2, width, height); 
       
-      ctx.restore();         // 5. Restore state
+      ctx.restore();
     }
 
 function drawHealthBar(){
@@ -1434,18 +1423,18 @@ function drawAttacks(){
 }
 
 function drawCircle(x, y, radius, fill, stroke, strokeWidth = 1) {
-    ctx.beginPath(); // Start a new path
-    ctx.arc(x, y, radius, 0, 2 * Math.PI, false); // Define the circle
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
     
     if (fill) {
         ctx.fillStyle = fill;
-        ctx.fill(); // Fill the circle
+        ctx.fill();
     }
     
     if (stroke) {
         ctx.lineWidth = strokeWidth;
         ctx.strokeStyle = stroke;
-        ctx.stroke(); // Draw the outline
+        ctx.stroke();
     }
 }
 
