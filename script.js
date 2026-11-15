@@ -2381,6 +2381,8 @@ function updateDefenders() {
             runBuff(defenders[i],buffAmount);
         }
     }
+    finishBuff();
+
     enemies.sort((a, b) => b.position - a.position);
     lastEnemies = enemies.toSorted((a, b) => a.position - b.position);
     strongEnemies = enemies.toSorted((a, b) => b.maxHealth - a.maxHealth);
@@ -2503,13 +2505,26 @@ function runBuff(buffDefender,buff){
         if(defender != buffDefender){
             let distance = (((buffDefender.x+(buffDefender.width/2))-(defender.x+(defender.width/2)))**2 + ((buffDefender.y+(buffDefender.height/2))-(defender.y+(defender.height/2)))**2)**0.5;
             if(distance < buffRange && !defenders[i]["specialAbilities"].find(sublist => sublist[0] === "buff")){
-                defender["buff"]["range"] += buff["range"] - 1;
-                defender["buff"]["damage"] += buff["damage"] - 1;
-                defender["buff"]["attackSpeed"] += buff["attackSpeed"] - 1;
+                defender["buff"]["range"] += buff["range"]-1;
+                defender["buff"]["damage"] += buff["damage"]-1;
+                defender["buff"]["attackSpeed"] += 1/buff["attackSpeed"]-1;
             }
         }
     }
 }
+
+function finishBuff(){
+    for (let i = 0; i < defenders.length; i++) {
+        let defender = defenders[i];
+
+        let diminishing = 0.5;
+
+        defender["buff"]["range"] = 1 + (defender["buff"]["range"]-1) / (1 + (defender["buff"]["range"]-1) * diminishing);
+        defender["buff"]["damage"] = 1 + (defender["buff"]["damage"]-1) / (1 + (defender["buff"]["damage"]-1) * diminishing);
+        defender["buff"]["attackSpeed"] = 1/(1 + (defender["buff"]["attackSpeed"]-1) / (1 + (defender["buff"]["attackSpeed"]-1) * diminishing));
+    }
+}
+
 
 function runSplash(currentEnemy, currentDefender, enemyIndex, splashSize, slowDownEffect) {
     const centerPos = currentEnemy.position;
