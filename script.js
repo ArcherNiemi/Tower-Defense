@@ -2507,10 +2507,14 @@ function runBuff(buffDefender,buff){
             if(distance < buffRange && !defenders[i]["specialAbilities"].find(sublist => sublist[0] === "buff")){
                 defender["buff"]["range"] += buff["range"]-1;
                 defender["buff"]["damage"] += buff["damage"]-1;
-                defender["buff"]["attackSpeed"] += 1/buff["attackSpeed"]-1;
+                defender["buff"]["attackSpeed"] += buff["attackSpeed"]-1;
             }
         }
     }
+}
+
+function buffSigmoid(value){
+    return 1.5/(1+Math.pow(15,-(value-1.255)))+0.5
 }
 
 function finishBuff(){
@@ -2519,9 +2523,9 @@ function finishBuff(){
 
         let diminishing = 0.5;
 
-        defender["buff"]["range"] = 1 + (defender["buff"]["range"]-1) / (1 + (defender["buff"]["range"]-1) * diminishing);
-        defender["buff"]["damage"] = 1 + (defender["buff"]["damage"]-1) / (1 + (defender["buff"]["damage"]-1) * diminishing);
-        defender["buff"]["attackSpeed"] = 1/(1 + (defender["buff"]["attackSpeed"]-1) / (1 + (defender["buff"]["attackSpeed"]-1) * diminishing));
+        defender["buff"]["range"] = buffSigmoid(defender["buff"]["range"]);
+        defender["buff"]["damage"] = buffSigmoid(defender["buff"]["damage"]);
+        defender["buff"]["attackSpeed"] = buffSigmoid(defender["buff"]["attackSpeed"]);
     }
 }
 
