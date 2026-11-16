@@ -1,4 +1,4 @@
-const version = "1.2.1";
+const version = "1.2.2";
 
 const rounds = {
   1: Array(4).fill({ enemyType: "basic", wait: 40 }),
